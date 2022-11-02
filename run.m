@@ -86,4 +86,4 @@ ylabel("$\vert \vert A - C C^\dagger A \vert \vert_2$", 'interpreter', 'latex', 
 title("Low-rank approximation by column sampling", 'FontSize', 15);
 legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
 legend('Location', 'southeast', 'FontSize', 10, 'NumColumns', 1);
-saveas(fig, "plot.eps");
+saveas(fig, "plot", "epsc");
