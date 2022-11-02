@@ -22,8 +22,7 @@ for i=1:num_avg
        for k=1:n
            ridge_scores(k) = V(k, :) * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V(k, :)';
        end
-       ridge_scores = ridge_scores / sum(ridge_scores);
-       indeces = randsample(n, j, true, ridge_scores);
+       indeces = randsample((1:n), j, true, ridge_scores);
        B = A(:, indeces);
        errors_ridge(i, j) = norm(A-B*pinv(B)*A, 2);
     end
@@ -36,7 +35,7 @@ errors_uniform = zeros(num_avg, 50);  % initialize errors vector
 B = A;  % copy of A for replacement
 for i=1:num_avg
     for j=1:50
-       indeces = randsample(n, j, true);
+       indeces = randsample((1:n), j, true);
        B = A(:, indeces);
        errors_uniform(i, j) = norm(A-B*pinv(B)*A, 2);
     end
@@ -50,9 +49,9 @@ for i=1:num_avg
     for j=1:50
        columns_scores = zeros(n, 1);
        for k=1:n
-           column_scores(k) = norm(A(:, k), 2) / norm(A, "fro");
+           column_scores(k) = norm(A(:, k), 2);
        end
-       indeces = randsample(n, j, true, column_scores);
+       indeces = randsample((1:n), j, true, column_scores);
        B = A(:, indeces);
        errors_columns(i, j) = norm(A-B*pinv(B)*A, 2);
     end
@@ -65,20 +64,13 @@ figure()
 x = (1:50);
 semilogy(x, mean_errors_ridge, 'LineWidth', 2.5);
 hold on
-patch([x fliplr(x)], [mean_errors_ridge-std_errors_ridge  fliplr(mean_errors_ridge+std_errors_ridge)], 'r', 'FaceAlpha',0.2, 'EdgeColor', 'Blue');
-hold on
 semilogy(x, mean_errors_columns, 'LineWidth', 2.5);
 hold on
-patch([x fliplr(x)], [mean_errors_columns-std_errors_columns fliplr(mean_errors_columns+std_errors_columns)], 'r', 'FaceAlpha', 0.2, 'EdgeColor','Red');
-hold on
-semilogy((1:50), mean_errors_uniform, 'LineWidth', 2.5);
-hold on
-patch([x fliplr(x)], [mean_errors_uniform-std_errors_uniform fliplr(mean_errors_uniform+std_errors_uniform)], 'r', 'FaceAlpha', 0.2, 'EdgeColor', 'Yellow');
-xlabel("k", 'FontSize', 20);
+semilogy(x, mean_errors_uniform, 'LineWidth', 2.5);
+xlabel("k", 'FontSize', 10);
 hold on
 semilogy(x, gold_standards(2:51), 'LineWidth', 1.5);
-ylabel("$\vert \vert A - C C^\dagger A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 20);
-title("Low-rank approximation by column sampling", 'FontSize', 30);
-legend("Ridge leverage scores", "", "Columns norm sampling", "", ...
-       "Uniform sampling", "", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
-legend('Location', 'southoutside', 'FontSize', 20, 'NumColumns', 4);
+ylabel("$\vert \vert A - C C^\dagger A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 10);
+title("Low-rank approximation by column sampling", 'FontSize', 15);
+legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
+legend('Location', 'southeast', 'FontSize', 10, 'NumColumns', 1);
