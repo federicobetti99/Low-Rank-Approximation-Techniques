@@ -116,3 +116,4 @@ title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 1);
 saveas(fig, "plot", "epsc");
+saveas(fig, "plot", "png");
