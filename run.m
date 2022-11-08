@@ -17,6 +17,7 @@ ranks = 50;
 
 %% ridge leverage scores
 errors_ridge = zeros(num_avg, ranks);  % initialize errors vector
+errors_ridge_pseudo= zeros(num_avg, ranks);
 
 % initialize scores
 ridge_scores = zeros(n, 1);
@@ -37,15 +38,18 @@ for i=1:num_avg
        [Uc, ~, ~] = svd(C, "econ");  % economy SVD of C
        Q1 = Uc(:, 1:j);  % take left principal subspace
        errors_ridge(i, j) = norm(A-Q1*Q1'*A, 2);  % compute error in 2-norm
+       errors_ridge_pseudo(i, j) = norm(A-C*pinv(C)*A, 2);
     end
 end
 
 mean_errors_ridge = mean(errors_ridge);
+mean_errors_ridge_pseudo = mean(errors_ridge_pseudo);
 std_errors_ridge = std(errors_ridge) / sqrt(num_avg);
-
+std_errors_ridge_pseudo = std(errors_ridge_pseudo) / sqrt(num_avg);
 
 %% uniform sampling
 errors_uniform = zeros(num_avg, ranks);  % initialize errors vector
+errors_uniform_pseudo = zeros(num_avg, ranks);  
 
 % initialize scores
 uniform_scores = 1/n * ones(n, 1);
@@ -62,15 +66,19 @@ for i=1:num_avg
        [Uc, ~, ~] = svd(C, "econ");  % economy SVD of C
        Q1 = Uc(:, 1:j);  % take left principal subspace
        errors_uniform(i, j) = norm(A-Q1*Q1'*A, 2);  % compute error in 2-norm
+       errors_uniform_pseudo(i, j) = norm(A-C*pinv(C)*A, 2);
     end
 end
 
 mean_errors_uniform = mean(errors_uniform);
-std_errors_uniform = std(errors_uniform);
+mean_errors_uniform_pseudo = mean(errors_uniform_pseudo);
+std_errors_uniform = std(errors_uniform) / sqrt(num_avg);
+std_errors_uniform_pseudo = std(errors_uniform_pseudo) / sqrt(num_avg);
 
 
 %% sample proportionally to the norm of the columns of A
 errors_columns = zeros(num_avg, ranks);  % initialize errors vector
+errors_columns_pseudo = zeros(num_avg, ranks);
 
 % initialize scores
 columns_scores = zeros(n, 1);
@@ -90,11 +98,14 @@ for i=1:num_avg
        [Uc, ~, ~] = svd(C, "econ");  % economy SVD of C
        Q1 = Uc(:, 1:j);  % take left principal subspace
        errors_columns(i, j) = norm(A-Q1*Q1'*A, 2);  % compute error in 2-norm
+       errors_columns_pseudo(i, j) = norm(A-C*pinv(C)*A, 2);
     end
 end
 
 mean_errors_columns = mean(errors_columns);
-std_errors_columns = std(errors_columns);
+mean_errors_columns_pseudo = mean(errors_columns_pseudo);
+std_errors_columns = std(errors_columns) / sqrt(num_avg);
+std_errors_columns_pseudo = std(errors_columns_pseudo) / sqrt(num_avg);
 
 
 %% plot results
@@ -115,5 +126,25 @@ ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 1);
-saveas(fig, "plot", "epsc");
-saveas(fig, "plot", "png");
+saveas(fig, "figures/plot", "epsc");
+saveas(fig, "figures/plot", "png");
+
+fig2 = figure();
+x = (1:ranks);
+semilogy(x, mean_errors_ridge_pseudo, 'LineWidth', 2.5);
+hold on
+semilogy(x, mean_errors_columns_pseudo, 'LineWidth', 2.5);
+hold on
+semilogy(x, mean_errors_uniform_pseudo, 'LineWidth', 2.5);
+hold on
+semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
+xlabel("k", 'FontSize', 12);
+ylabel("$\vert \vert A - C C^\dagger A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
+ax = gca;
+ax.XAxis.FontSize = 14;
+ax.YAxis.FontSize = 14;
+title("Low-rank approximation by column sampling", 'FontSize', 12);
+legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
+legend('Location', 'best', 'FontSize', 12, 'NumColumns', 1);
+saveas(fig2, "figures/plot2", "epsc");
+saveas(fig2, "figures/plot2", "png");
