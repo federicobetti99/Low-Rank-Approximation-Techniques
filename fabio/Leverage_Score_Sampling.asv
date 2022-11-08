@@ -113,7 +113,7 @@ average_err_uniform_pseudo = mean(err_uniform_pseudo);
 average_err_columns_pseudo = mean(err_columns_pseudo);
 
 
-fig1 = figure();
+fig = figure();
 x = (1:ranks);
 semilogy(x, average_err_ridges_pseudo,'LineWidth', 1.0);
 hold on
@@ -132,8 +132,8 @@ title("Low-rank approximation - different sampling", 'FontSize', 12);
 
 legend("Ridge leverage scores", "Uniform sampling", "Column-norm sampling", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 1);
-saveas(fig1, 'plot', 'epsc');
-%saveas(fig1, 'plot.jpg');
+saveas(fig, 'plot', 'epsc');
+saveas(fig, 'plot.jpg');
 
 
 %||A-QkQk.T||_2
@@ -143,7 +143,7 @@ average_err_uniform = mean(err_uniform);
 average_err_columns = mean(err_columns);
 
 
-fig2 = figure();
+fig = figure();
 x = (1:ranks);
 semilogy(x, average_err_ridges,'LineWidth', 1.0);
 hold on
@@ -162,5 +162,5 @@ title("Low-rank approximation - different sampling", 'FontSize', 12);
 
 legend("Ridge leverage scores", "Uniform sampling", "Column-norm sampling", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 1);
-%saveas(fig2, 'plot2', 'jpg');
-saveas(fig2, 'plot2', 'epsc');
+saveas(fig, 'plot2', 'epsc');
+saveas(fig, 'plot2', 'epsc');
