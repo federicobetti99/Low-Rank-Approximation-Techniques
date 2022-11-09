@@ -14,6 +14,37 @@ lambda = 1e-4;
 gold_standards = diag(S);
 ranks = 50;
 
+%% leverage scores
+errors_leverage = zeros(num_avg, ranks);  % initialize errors vector
+errors_leverage_pseudo= zeros(num_avg, ranks);
+
+% initialize scores
+leverage_scores = zeros(n, 1);
+for k=1:n
+   leverage_scores(k) = A(:, k)' * pinv(A*A') * A(:, k);
+end
+leverage_scores = leverage_scores / sum(leverage_scores);
+
+% average over multiple runs
+for i=1:num_avg
+    % ranks from 1, ..., 50
+    for j=1:ranks
+       C = zeros(n, j);
+       for l=1:j
+           p = sampling(leverage_scores);  % sample from distribution
+           C(:, l) = A(:, p) / sqrt(j * leverage_scores(p));  % take column and rescale to have unbiased estimate
+       end
+       [Uc, ~, ~] = svd(C, "econ");  % economy SVD of C
+       Q1 = Uc(:, 1:j);  % take left principal subspace
+       errors_leverage(i, j) = norm(A-Q1*Q1'*A, 2);  % compute error in 2-norm
+       errors_leverage_pseudo(i, j) = norm(A-C*pinv(C)*A, 2);
+    end
+end
+
+mean_errors_leverage = mean(errors_leverage);
+mean_errors_leverage_pseudo = mean(errors_leverage_pseudo);
+std_errors_leverage = std(errors_leverage) / sqrt(num_avg);
+std_errors_leverage_pseudo = std(errors_leverage_pseudo) / sqrt(num_avg);
 
 %% ridge leverage scores
 errors_ridge = zeros(num_avg, ranks);  % initialize errors vector
@@ -146,6 +177,8 @@ semilogy(x, mean_errors_uniform, 'LineWidth', 2.5);
 hold on
 semilogy(x, mean_errors_row, 'LineWidth', 2.5);
 hold on
+semilogy(x, mean_errors_leverage, 'LineWidth', 2.5);
+hold on
 semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
 xlabel("k", 'FontSize', 12);
 ylabel("$\vert \vert A - Q Q^T A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
@@ -153,7 +186,7 @@ ax = gca;
 ax.XAxis.FontSize = 14;
 ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
-legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "Rows of $V_k$", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
+legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "Rows of $V_k$", "Leverage scores", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 1);
 saveas(fig, "figures/plot", "epsc");
 saveas(fig, "figures/plot", "png");
@@ -168,6 +201,8 @@ semilogy(x, mean_errors_uniform_pseudo, 'LineWidth', 2.5);
 hold on
 semilogy(x, mean_errors_row_pseudo, 'LineWidth', 2.5);
 hold on
+semilogy(x, mean_errors_leverage_pseudo, 'LineWidth', 2.5);
+hold on
 semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
 xlabel("k", 'FontSize', 12);
 ylabel("$\vert \vert A - C C^\dagger A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
@@ -175,7 +210,7 @@ ax = gca;
 ax.XAxis.FontSize = 14;
 ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
-legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "Rows of $V_k$", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
+legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "Rows of $V_k$", "Leverage scores", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 1);
 saveas(fig2, "figures/plot2", "epsc");
 saveas(fig2, "figures/plot2", "png");
