@@ -108,15 +108,15 @@ std_errors_columns = std(errors_columns) / sqrt(num_avg);
 std_errors_columns_pseudo = std(errors_columns_pseudo) / sqrt(num_avg);
 
 %% sample proportionally to the rows of V_k
-errors_row = zeros(num_avg, ranks);  % initialize error vector
-errors_row_pseudo = zeros(num_avg, ranks);
+errors_row = zeros(ranks, num_avg);  % initialize error vector
+errors_row_pseudo = zeros(ranks, num_avg);
 
 for i=1:num_avg
     for k=1:ranks
         V_k = V(:, 1:k);
         row_scores = zeros(n, 1);
-        for l=1:n
-            row_scores(l) = norm(V_k(l, :))^2 / k;
+        for i=1:n
+            row_scores(i) = norm(V_k(i, :))^2 / k;
         end
         C = zeros(n, k);
         for j=1:k
