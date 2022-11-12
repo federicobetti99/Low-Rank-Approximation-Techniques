@@ -209,7 +209,7 @@ ylabel("$\vert \vert A - C C^\dagger A \vert \vert_2$", 'interpreter', 'latex', 
 ax = gca;
 ax.XAxis.FontSize = 14;
 ax.YAxis.FontSize = 14;
-title("Low-rank approximation by column sampling - Lambda ", 'FontSize', 12);
+title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend("Ridge leverage scores", "Columns norm sampling", "Uniform sampling", "Rows of $V_k$", "Leverage scores", "$\sigma_{k+1}(A)$", 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 1);
 saveas(fig2, "figures/plot2_lambda", "epsc");
