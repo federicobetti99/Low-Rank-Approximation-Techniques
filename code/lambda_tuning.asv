@@ -30,7 +30,7 @@ mean_errors_row = mean(errors_row);
 %% cycle over lambda
 
 % plot results
-fig_legend_string = ["Rows of $V_k$", "$\sigma_{k+1}(A)$", "Ridge with adaptive $\lambda$"];
+fig_legend_string = ["Rows of $V_k$", "$\sigma_{k+1}(A)$"];
 
 %% ridge leverage scores
 errors_ridge = zeros(num_avg, ranks);  % initialize errors vector

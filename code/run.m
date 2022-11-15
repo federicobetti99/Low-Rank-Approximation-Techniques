@@ -6,7 +6,7 @@ clc
 %% define Hilbert matrix and useful quantities
 n = 100;
 A = hilb(n);
-num_avg = 20;
+num_avg = 100;
 lambda = 1e-4;
 [U, S, V] = svd(A);
 gold_standards = diag(S);
