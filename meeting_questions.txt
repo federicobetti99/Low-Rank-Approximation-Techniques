@@ -1,7 +1,0 @@
-- Misura dell'errore, le colonne selezionate non sono necessariamente ortogonali
-- Lambda scelto per gli esperimenti, nel paper ne prendono sempre uno in particolare
-- Dimostrazione di ortogonalità e di interpretazione
-- Discutere algoritmo per overestimate dei ridge scores
-- Conclusioni da trarre riguardo all'esempio di lambda tra sigma_k e sigma_k+1
-- Capire il problema di minimo per i ridge
-- Capire bene perchè nel progetto l'esempio è dato con una matrice di Hilbert (decadenza rapida sing val e quindi easy da capire effetti ridge?)
