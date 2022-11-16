@@ -12,7 +12,8 @@ gold_standards = diag(S);
 ranks = 50;
 
 %% sample proportionally to the rows of V_k
-errors_row = zeros(num_avg, ranks);  % initialize error vector
+orthogonal_errors_row = zeros(num_avg, ranks);
+oblique_errors_row = zeros(num_avg, ranks);
 
 for i=1:num_avg
     for j=1:ranks
@@ -21,11 +22,14 @@ for i=1:num_avg
         for l=1:n
             row_scores(l) = norm(V_j(l, :))^2 / j;
         end
-        errors_row(i, j) = RCCS(A, row_scores / sum(row_scores), j);
+        [orthogonal_error, oblique_error] = RCCS(A, row_scores / sum(row_scores), j); 
+        orthogonal_errors_row(i, j) = orthogonal_error;
+        oblique_errors_row(i, j) = oblique_error;
     end
 end
 
-mean_errors_row = mean(errors_row);
+orthogonal_mean_errors_row = mean(orthogonal_errors_row);
+oblique_mean_errors_row = mean(oblique_errors_row);
 
 %% cycle over lambda
 
@@ -33,7 +37,8 @@ mean_errors_row = mean(errors_row);
 fig_legend_string = ["Rows of $V_k$", "$\sigma_{k+1}(A)$", "Ridge with adaptive $\lambda$"];
 
 %% ridge leverage scores
-errors_ridge = zeros(num_avg, ranks);  % initialize errors vector
+orthogonal_errors_ridge = zeros(num_avg, ranks);
+oblique_errors_ridge = zeros(num_avg, ranks);
 
 % average over multiple runs
 for i=1:num_avg
@@ -45,20 +50,42 @@ for i=1:num_avg
             ridge_scores(k) = V(k, :) * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V(k, :)';
         end
         ridge_scores = ridge_scores / sum(ridge_scores);
-        errors_ridge(i, j) = RCCS(A, ridge_scores, j);  % compute error in 2-norm
+        [orthogonal_error, oblique_error] = RCCS(A, ridge_scores, j);
+        orthogonal_errors_ridge(i, j) = orthogonal_error;
+        oblique_errors_ridge(i, j) = oblique_error;
     end
 end
 
-mean_errors_ridge = mean(errors_ridge);
+orthogonal_mean_errors_ridge = mean(orthogonal_errors_ridge);
+oblique_mean_errors_ridge = mean(oblique_errors_ridge);
 
-%% plot results
+%% plot results for orthogonal projection errors
 fig = figure();
 x = (1:ranks);
-semilogy(x, mean_errors_row, 'LineWidth', 2.5);
+semilogy(x, orthogonal_mean_errors_row, 'LineWidth', 2.5);
 hold on
 semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
 hold on
-semilogy(x, mean_errors_ridge, 'LineWidth', 2.5);
+semilogy(x, orthogonal_mean_errors_ridge, 'LineWidth', 2.5);
+xlabel("k", 'FontSize', 12);
+ylabel("$\vert \vert A - Q Q^T A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
+ax = gca;
+ax.XAxis.FontSize = 14;
+ax.YAxis.FontSize = 14;
+title("Low-rank approximation by column sampling", 'FontSize', 12);
+legend(fig_legend_string, 'interpreter', 'latex');
+legend('Location', 'best', 'FontSize', 12, 'NumColumns', 2);
+saveas(fig, "../figures/orthogonal_lambda_tuning", "epsc");
+saveas(fig, "../figures/orthogonal_lambda_tuning", "png");
+
+%% plot results for orthogonal projection errors
+fig2 = figure();
+x = (1:ranks);
+semilogy(x, oblique_mean_errors_row, 'LineWidth', 2.5);
+hold on
+semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
+hold on
+semilogy(x, oblique_mean_errors_ridge, 'LineWidth', 2.5);
 xlabel("k", 'FontSize', 12);
 ylabel("$\vert \vert A - C C^\dagger A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
 ax = gca;
@@ -67,5 +94,5 @@ ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend(fig_legend_string, 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 2);
-saveas(fig, "../figures/lambda_tuning", "epsc");
-saveas(fig, "../figures/lambda_tuning", "png");
+saveas(fig2, "../figures/oblique_lambda_tuning", "epsc");
+saveas(fig2, "../figures/oblique_lambda_tuning", "png");
