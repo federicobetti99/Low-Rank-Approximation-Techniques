@@ -34,7 +34,7 @@ oblique_mean_errors_row = mean(oblique_errors_row);
 %% cycle over lambda
 
 % plot results
-fig_legend_string = ["Rows of $V_k$", "$\sigma_{k+1}(A)$", "Ridge with adaptive $\lambda$"];
+fig_legend_string = ["Rows of $V_k$", "$\sigma_{k+1}(A)$", "Ridge with adaptive $\lambda$", "$\lambda$ with halving"];
 
 %% ridge leverage scores
 orthogonal_errors_ridge = zeros(num_avg, ranks);
@@ -45,7 +45,7 @@ for i=1:num_avg
     % ranks from 1, ..., 50
     for j=1:ranks
         ridge_scores = zeros(n, 1);
-        lambda = 1/j * sqrt(sum(gold_standards(j+1:end).^2));
+        lambda = 1/j * sqrt(sum(gold_standards(j+1:end).^2)); %lambda ottimo
         for k=1:n
             ridge_scores(k) = V(k, :) * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V(k, :)';
         end
@@ -59,6 +59,38 @@ end
 orthogonal_mean_errors_ridge = mean(orthogonal_errors_ridge);
 oblique_mean_errors_ridge = mean(oblique_errors_ridge);
 
+
+%%%%%%%%%added
+%% Estimates with halving procedure
+% average over multiple runs
+for i=1:num_avg
+    % ranks from 1, ..., 50
+    for j=1:ranks
+        estimated_ridge_scores = zeros(n, 1);
+         
+        col = n;
+        Ah = A;
+        M = zeros(n, n);
+
+        while col> ranks*log(ranks)
+           M = Ah(:, randsample(col, col/2)); 
+           Ah = M;
+           col = col/2;
+        end
+
+        estimated_ridge_scores = diag(A'*pinv(M*M' + lambda.^2*eye(n))*A);
+    
+        estimated_ridge_scores = estimated_ridge_scores / sum(estimated_ridge_scores);
+        [orthogonal_estimate_error, oblique_estimate_error] = RCCS(A, estimated_ridge_scores, j);
+        orthogonal_errors_estimate_ridge(i, j) = orthogonal_estimate_error;
+        oblique_errors_estimate_ridge(i, j) = oblique_estimate_error;
+    end
+end
+
+orthogonal_mean_errors_estimate_ridge = mean(orthogonal_errors_estimate_ridge);
+oblique_mean_errors_estimate_ridge = mean(oblique_errors_estimate_ridge);
+%%%%%%%
+
 %% plot results for orthogonal projection errors
 fig = figure();
 x = (1:ranks);
@@ -67,6 +99,9 @@ hold on
 semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
 hold on
 semilogy(x, orthogonal_mean_errors_ridge, 'LineWidth', 2.5);
+hold on
+semilogy(x, orthogonal_mean_errors_estimate_ridge, 'LineWidth', 2.5); %
+
 xlabel("k", 'FontSize', 12);
 ylabel("$\vert \vert A - Q Q^T A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
 ax = gca;
@@ -75,8 +110,7 @@ ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend(fig_legend_string, 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 2);
-saveas(fig, "../figures/orthogonal_lambda_tuning", "epsc");
-saveas(fig, "../figures/orthogonal_lambda_tuning", "png");
+saveas(fig, "figures/orthogonal_lambda_tuning", "epsc");
 
 %% plot results for orthogonal projection errors
 fig2 = figure();
@@ -86,6 +120,9 @@ hold on
 semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
 hold on
 semilogy(x, oblique_mean_errors_ridge, 'LineWidth', 2.5);
+hold on
+semilogy(x, oblique_mean_errors_estimate_ridge, 'LineWidth', 2.5); %
+
 xlabel("k", 'FontSize', 12);
 ylabel("$\vert \vert A - C C^\dagger A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
 ax = gca;
@@ -94,5 +131,4 @@ ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend(fig_legend_string, 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 2);
-saveas(fig2, "../figures/oblique_lambda_tuning", "epsc");
-saveas(fig2, "../figures/oblique_lambda_tuning", "png");
+saveas(fig2, "figures/oblique_lambda_tuning", "epsc");
