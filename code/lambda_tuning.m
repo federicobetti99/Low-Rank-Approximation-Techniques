@@ -60,7 +60,6 @@ orthogonal_mean_errors_ridge = mean(orthogonal_errors_ridge);
 oblique_mean_errors_ridge = mean(oblique_errors_ridge);
 
 
-%%%%%%%%%added
 %% Estimates with halving procedure
 % average over multiple runs
 for i=1:num_avg
@@ -72,12 +71,14 @@ for i=1:num_avg
         Ah = A;
         M = zeros(n, n);
 
-        while col> ranks*log(ranks)
-           M = Ah(:, randsample(col, col/2)); 
+        while col > j*log(j) && col > 1
+           M = Ah(:, randsample(col, round(col/2), true)); 
            Ah = M;
-           col = col/2;
+           col = round(col/2);
         end
-
+        
+        lambda = 1/j * sqrt(sum(gold_standards(j+1:end).^2)); %lambda ottimo
+        
         estimated_ridge_scores = diag(A'*pinv(M*M' + lambda.^2*eye(n))*A);
     
         estimated_ridge_scores = estimated_ridge_scores / sum(estimated_ridge_scores);
@@ -89,7 +90,6 @@ end
 
 orthogonal_mean_errors_estimate_ridge = mean(orthogonal_errors_estimate_ridge);
 oblique_mean_errors_estimate_ridge = mean(oblique_errors_estimate_ridge);
-%%%%%%%
 
 %% plot results for orthogonal projection errors
 fig = figure();
@@ -110,7 +110,7 @@ ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend(fig_legend_string, 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 2);
-saveas(fig, "figures/orthogonal_lambda_tuning", "epsc");
+saveas(fig, "../figures/orthogonal_lambda_tuning", "epsc");
 
 %% plot results for orthogonal projection errors
 fig2 = figure();
@@ -131,4 +131,4 @@ ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend(fig_legend_string, 'interpreter', 'latex');
 legend('Location', 'best', 'FontSize', 12, 'NumColumns', 2);
-saveas(fig2, "figures/oblique_lambda_tuning", "epsc");
+saveas(fig2, "../figures/oblique_lambda_tuning", "epsc");
