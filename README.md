@@ -10,6 +10,9 @@ This repository contains the implememention side of the leverage score sampling 
 - `report` - Folder containing the report of the obtained results
   - `report.pdf` - Report of the obtained results in pdf format
   
+## Reproducibility of the results
+We provide the interested reader of our report with Matlab scripts to reproduce the plots shown in the report. The script `run.m` carries out a comparison between uniform sampling, columns norm sampling and ridge leverage scores sampling for a Hilbert matrix of size 100, and produces a plot of the average projection error for all the strategies. The script `lambda_tuning.m` shows that for a wise choice of the regularization parameter, which we specified in the report, ridge leverage scores are basically equivalent to sampling from the rows of the k-truncated matrix of the right singular vectors of A. Finally, the script `halving.m` implements the repeated halving algorithm and compares its performance to ridge leverage scores, thus reproducing the last plot shown in the report. 
+  
 ## Authors
 - Federico Betti
 - Fabio Zoccolan
