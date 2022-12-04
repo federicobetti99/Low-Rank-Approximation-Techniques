@@ -35,7 +35,8 @@ mean_errors_row = mean(orthogonal_errors_row);
 %% cycle over lambda
 
 % plot results
-fig_legend_string = ["$\sim \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$", "$l_{i, \lambda}(A)$ with adaptive $\lambda$"];
+fig_legend_string = ["$\sim \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$", ...
+                     "$l_{i, \lambda}(A)$ with adaptive $\lambda$"];
 
 % ridge leverage scores
 projection_errors_ridge = zeros(num_avg, ranks);

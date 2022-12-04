@@ -48,15 +48,25 @@ projection_errors_estimate_ridge = zeros(num_avg, ranks);
 
 % average over multiple runs
 for i=1:num_avg
+           
+    Ah = A;
+    col = n;
+    M = zeros(n, n);
+    
     % ranks from 1, ..., 50
     for j=1:ranks
-        Cu = halving(A, j);
-        [~, Sigma_C, ~] = svd(Cu, "econ");
-        gold_standard_C = diag(Sigma_C);
-        lambda = 1/sqrt(j) * sqrt(sum(gold_standard_C(j+1:end).^2));
-        estimated_ridge_scores = diag(A'*pinv(Cu*Cu' + lambda.^2*eye(n))*A);
-        [~, projection_error] = RCCS(A, estimated_ridge_scores / sum(estimated_ridge_scores), j);
-        projection_errors_estimate_ridge(i, j) = projection_error;
+       while col > j*log(j) && col > 1
+            col2 = fix(col/2);
+            M = Ah(:, randsample(col, col2)); 
+            Ah = M;
+            col = col2;
+       end
+       [~, Sigma_M, ~] = svd(M, "econ");
+       gold_standard_M = diag(Sigma_M);
+       lambda = 1/sqrt(j) * sqrt(sum(gold_standard_M(j+1:end).^2));
+       estimated_ridge_scores = diag(A'*pinv(M*M' + lambda.^2*eye(n))*A);
+       [~, projection_error] = RCCS(A, estimated_ridge_scores / sum(estimated_ridge_scores), j);
+       projection_errors_estimate_ridge(i, j) = projection_error;
     end
 end
 
