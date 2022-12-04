@@ -4,7 +4,6 @@ close all
 clc
 
 %% import utilities
-
 addpath("utils")
 
 %% define Hilbert matrix and useful quantities

@@ -4,7 +4,6 @@ close all
 clc
 
 %% import utilities
-
 addpath("utils")
 
 %% define Hilbert matrix and useful quantities
@@ -24,7 +23,7 @@ show_column_scores = 1;
 
 %% compute averages for selected sampling probabilities
 
-if (show_ridge_scores) % exact ridge scores
+if (show_ridge_scores) % ridge leverage scores
     ridge_scores = zeros(n, 1);
     for k=1:n
        ridge_scores(k) = V(k, :) * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V(k, :)';
