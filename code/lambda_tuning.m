@@ -14,51 +14,39 @@ num_avg = 20;
 [U, S, V] = svd(A);
 gold_standards = diag(S);
 ranks = 50;
+fig_legend_string = ["$\sim \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$", ...
+                     "$l_{i, \lambda}(A)$ with adaptive $\lambda$"];
 
 %% sample proportionally to the rows of V_k
 orthogonal_errors_row = zeros(num_avg, ranks);
 
 for i=1:num_avg
     for j=1:ranks
-        V_j = V(:, 1:j);
-        row_scores = zeros(n, 1);
-        for l=1:n
-            row_scores(l) = norm(V_j(l, :))^2 / j;
-        end
-        [~, projection_error] = RCCS(A, row_scores / sum(row_scores), j); 
+        row_scores = sum(V(:, 1:j).^2, 2); % svd(A) returns V and not V'
+        [~, projection_error] = RCCS(A, row_scores / j, j);
         orthogonal_errors_row(i, j) = projection_error;
     end
 end
 
 mean_errors_row = mean(orthogonal_errors_row);
 
-%% cycle over lambda
-
-% plot results
-fig_legend_string = ["$\sim \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$", ...
-                     "$l_{i, \lambda}(A)$ with adaptive $\lambda$"];
-
-% ridge leverage scores
+% ridge leverage scores with adaptive lambda
 projection_errors_ridge = zeros(num_avg, ranks);
 
 % average over multiple runs
 for i=1:num_avg
     % ranks from 1, ..., 50
     for j=1:ranks
-        ridge_scores = zeros(n, 1);
         lambda = 1/sqrt(j) * sqrt(sum(gold_standards(j+1:end).^2));
-        for k=1:n
-            ridge_scores(k) = V(k, :) * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V(k, :)';
-        end
-        ridge_scores = ridge_scores / sum(ridge_scores);
-        [~, projection_error] = RCCS(A, ridge_scores, j);
+        ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V');
+        [~, projection_error] = RCCS(A, ridge_scores / sum(ridge_scores), j);
         projection_errors_ridge(i, j) = projection_error;
     end
 end
 
 mean_errors_ridge = mean(projection_errors_ridge);
 
-%% plot results for orthogonal projection errors
+%% plot results
 fig = figure();
 x = (1:ranks);
 semilogy(x, mean_errors_row, 'LineWidth', 2.5);

@@ -29,13 +29,9 @@ projection_errors_ridge = zeros(num_avg, ranks);
 for i=1:num_avg
     % ranks from 1, ..., 50
     for j=1:ranks
-        ridge_scores = zeros(n, 1);
         lambda = 1e-4;
-        for k=1:n
-            ridge_scores(k) = V(k, :) * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V(k, :)';
-        end
-        ridge_scores = ridge_scores / sum(ridge_scores);
-        [~, orthogonal_error] = RCCS(A, ridge_scores, j);
+        ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V');
+        [~, orthogonal_error] = RCCS(A, ridge_scores / sum(ridge_scores), j);
         projection_errors_ridge(i, j) = orthogonal_error;
     end
 end
