@@ -3,6 +3,11 @@ clear
 close all
 clc
 
+%% import utilities and fix seed
+addpath("utils")
+rng("default")
+rng(0)
+
 %% define Hilbert matrix and useful quantities
 n = 100;
 A = hilb(n);
