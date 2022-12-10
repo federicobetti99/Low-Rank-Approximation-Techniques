@@ -3,7 +3,7 @@ function [C, projection_error] = RCCS(A, scores, j)
 %       note that sampling is done independently and with replacement
 %    A: original matrix
 %    scores: probability distribution used for sampling
-%    c: size of random column subset
+%    j: size of random column subset
 
    n = size(A, 1);
    C = zeros(n, j);

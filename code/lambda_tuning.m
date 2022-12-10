@@ -17,12 +17,18 @@ ranks = 50;
 fig_legend_string = ["$\sim \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$", ...
                      "$l_{i, \lambda}(A)$ with adaptive $\lambda$"];
 
-%% sample proportionally to the rows of V_k
+%% compute projection errors
+
+% sample proportionally to the rows norms of V_j
 orthogonal_errors_row = zeros(num_avg, ranks);
 
 for i=1:num_avg
     for j=1:ranks
-        row_scores = sum(V(:, 1:j).^2, 2); % svd(A) returns V and not V'
+        V_j = V(:, 1:j);
+        row_scores = zeros(n, 1);
+        for l=1:n
+            row_scores(l) = norm(V_j(l, :))^2;
+        end
         [~, projection_error] = RCCS(A, row_scores / j, j);
         orthogonal_errors_row(i, j) = projection_error;
     end

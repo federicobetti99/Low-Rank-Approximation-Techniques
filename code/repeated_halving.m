@@ -15,21 +15,17 @@ num_avg = 20;
 gold_standards = diag(S);
 ranks = 50;
 lambda = 1e-4;
-
-%% cycle over lambda
-
-% plot results
 fig_legend_string = ["$\sigma_{k+1}(A)$", "$l_{i, \lambda}(A)$", "$l_{i, \lambda}^M(A)$"];
 
-%% ridge leverage scores
+%% compute projection errors
 
+% Ridge leverage scores
 projection_errors_ridge = zeros(num_avg, ranks);
 
 % average over multiple runs
 for i=1:num_avg
     % ranks from 1, ..., 50
     for j=1:ranks
-        lambda = 1e-4;
         ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V');
         [~, orthogonal_error] = RCCS(A, ridge_scores / sum(ridge_scores), j);
         projection_errors_ridge(i, j) = orthogonal_error;
@@ -38,17 +34,14 @@ end
 
 mean_errors_ridge = mean(projection_errors_ridge);
 
-%% Estimates with repeated halving procedure
-
+% Estimates with repeated halving procedure
 projection_errors_estimate_ridge = zeros(num_avg, ranks);
 
 % average over multiple runs
-for i=1:num_avg
-           
+for i=1:num_avg           
     Ah = A;
     col = n;
     M = zeros(n, n);
-    
     % ranks from 1, ..., 50
     for j=1:ranks
        while col > j*log(j) && col > 1
@@ -68,15 +61,14 @@ end
 
 mean_errors_estimate_ridge = mean(projection_errors_estimate_ridge);
 
-%% plot results for orthogonal projection errors
+%% plot results
 fig = figure();
 x = (1:ranks);
 semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
 hold on
 semilogy(x, mean_errors_ridge, 'LineWidth', 2.5);
 hold on
-semilogy(x, mean_errors_estimate_ridge, 'LineWidth', 2.5); %
-
+semilogy(x, mean_errors_estimate_ridge, 'LineWidth', 2.5);
 xlabel("k", 'FontSize', 12);
 ylabel("$\vert \vert A - Q Q^T A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
 ax = gca;
