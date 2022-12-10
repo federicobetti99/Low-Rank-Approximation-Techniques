@@ -3,13 +3,14 @@ clear
 close all
 clc
 
-%% import utilities
+%% import utilities and fix seed
 addpath("utils")
+rng("default")
 
 %% define Hilbert matrix and useful quantities
 n = 100;
 A = hilb(n);
-num_avg = 100;
+num_avg = 20;
 [U, S, V] = svd(A);
 gold_standards = diag(S);
 ranks = 50;
