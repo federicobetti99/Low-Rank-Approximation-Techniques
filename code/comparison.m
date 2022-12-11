@@ -21,17 +21,17 @@ fig_legend_string = ["$\propto l_{i, \lambda}(A)$", "$\propto 1/n$", ...
 %% compute projection errors
 
 % ridge leverage scores
-lambda = 1e-4;
-ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V'); % svd(A) returns V and not V'
-mean_errors_ridge = compute_averages(A, ridge_scores / sum(ridge_scores), num_avg, ranks);
+lambda = 1e-4; % regularization parameter
+ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V'); % compute ridge scores
+mean_errors_ridge = compute_averages(A, ridge_scores / sum(ridge_scores), num_avg, ranks); % mean over num_avg runs
 
 % uniform scores
-uniform_scores = 1/n * ones(n, 1);
-mean_errors_uniform = compute_averages(A, uniform_scores, num_avg, ranks);
+uniform_scores = 1/n * ones(n, 1); % compute uniform scores
+mean_errors_uniform = compute_averages(A, uniform_scores, num_avg, ranks); % mean over num_avg runs
 
 % columns norm scores
-column_scores = sum(A.^2, 2);
-mean_errors_columns = compute_averages(A, column_scores / sum(column_scores), num_avg, ranks);
+column_scores = sum(A.^2, 2) / norm(A, "fro")^2; % columns norm scores
+mean_errors_columns = compute_averages(A, column_scores, num_avg, ranks); % mean over num_avg runs
 
 %% plot results
 fig = figure();

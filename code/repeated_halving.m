@@ -22,30 +22,23 @@ fig_legend_string = ["$\sigma_{k+1}(A)$", "$\propto l_{i, \lambda}(A)$", "$\prop
 
 % Ridge leverage scores
 projection_errors_ridge = zeros(num_avg, ranks);
-
-% average over multiple runs
-for i=1:num_avg
-    % ranks from 1, ..., 50
-    for j=1:ranks
-        ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V');
-        [~, orthogonal_error] = RCCS(A, ridge_scores / sum(ridge_scores), j);
-        projection_errors_ridge(i, j) = orthogonal_error;
+for i=1:num_avg % average over multiple runs
+    for j=1:ranks % ranks from 1, ..., 50
+        ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V'); % compute ridge scores
+        [~, orthogonal_error] = RCCS(A, ridge_scores / sum(ridge_scores), j); % compute RCCS
+        projection_errors_ridge(i, j) = orthogonal_error; % save error
     end
 end
-
-mean_errors_ridge = mean(projection_errors_ridge);
+mean_errors_ridge = mean(projection_errors_ridge); % mean over num_avg runs
 
 % Estimates with repeated halving procedure
 projection_errors_estimate_ridge = zeros(num_avg, ranks);
-
-% average over multiple runs
-for i=1:num_avg           
+for i=1:num_avg % average over multiple runs
     Ah = A;
     col = n;
     M = zeros(n, n);
-    % ranks from 1, ..., 50
-    for j=1:ranks
-       while col > j*log(j) && col > 1
+    for j=1:ranks % ranks from 1, ..., 50
+       while col > j*log(j) && col > 1  % get random column submatrix
             col2 = fix(col/2);
             M = Ah(:, randsample(col, col2)); 
             Ah = M;
@@ -53,14 +46,13 @@ for i=1:num_avg
        end
        [~, Sigma_M, ~] = svd(M, "econ");
        gold_standard_M = diag(Sigma_M);
-       lambda = 1/sqrt(j) * sqrt(sum(gold_standard_M(j+1:end).^2));
-       estimated_ridge_scores = diag(A'*pinv(M*M' + lambda.^2*eye(n))*A);
-       [~, projection_error] = RCCS(A, estimated_ridge_scores / sum(estimated_ridge_scores), j);
-       projection_errors_estimate_ridge(i, j) = projection_error;
+       lambda = 1/sqrt(j) * sqrt(sum(gold_standard_M(j+1:end).^2)); % adaptive lambda for random column submatrix
+       estimated_ridge_scores = diag(A'*pinv(M*M' + lambda.^2*eye(n))*A); % compute generalized ridge scores
+       [~, projection_error] = RCCS(A, estimated_ridge_scores / sum(estimated_ridge_scores), j); % compute RCCS
+       projection_errors_estimate_ridge(i, j) = projection_error; % save error
     end
 end
-
-mean_errors_estimate_ridge = mean(projection_errors_estimate_ridge);
+mean_errors_estimate_ridge = mean(projection_errors_estimate_ridge); % mean over num_avg runs
 
 %% plot results
 fig = figure();

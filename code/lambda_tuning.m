@@ -22,37 +22,31 @@ fig_legend_string = ["$\propto \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma
 
 % sample proportionally to the rows norms of V_j
 orthogonal_errors_row = zeros(num_avg, ranks);
-
-for i=1:num_avg
-    for j=1:ranks
-        V_j = V(:, 1:j);
-        row_scores = zeros(n, 1);
+for i=1:num_avg % average over multiple runs
+    for j=1:ranks  % ranks from 1, ..., 50
+        V_j = V(:, 1:j);  % take first k columns of V
+        row_scores = zeros(n, 1); % compute scores
         for l=1:n
             row_scores(l) = norm(V_j(l, :))^2;
         end
-        [~, projection_error] = RCCS(A, row_scores / j, j);
-        orthogonal_errors_row(i, j) = projection_error;
+        [~, projection_error] = RCCS(A, row_scores / j, j); % compute RCCS
+        orthogonal_errors_row(i, j) = projection_error; % save error
     end
 end
-
-mean_errors_row = mean(orthogonal_errors_row);
+mean_errors_row = mean(orthogonal_errors_row);  % mean over num_avg runs
 
 % ridge leverage scores with adaptive lambda
 projection_errors_ridge = zeros(num_avg, ranks);
-
-% average over multiple runs
-for i=1:num_avg
-    % ranks from 1, ..., 50
-    for j=1:ranks
+for i=1:num_avg % average over multiple runs
+    for j=1:ranks % ranks from 1, ..., 50
         Uj = U(:, 1:j);
-        lambda = 1/sqrt(j) * norm(A-Uj*Uj'*A, "fro");
-        ridge_scores = diag(A' * pinv(A*A' + lambda^2 * eye(n)) * A);
-        [~, projection_error] = RCCS(A, ridge_scores / sum(ridge_scores), j);
-        projection_errors_ridge(i, j) = projection_error;
+        lambda = 1/sqrt(j) * norm(A-Uj*Uj'*A, "fro"); % adaptive \lambda
+        ridge_scores = diag(A' * pinv(A*A' + lambda^2 * eye(n)) * A); % compute scores
+        [~, projection_error] = RCCS(A, ridge_scores / sum(ridge_scores), j); % compute RCCS
+        projection_errors_ridge(i, j) = projection_error; % save error
     end
 end
-
-mean_errors_ridge = mean(projection_errors_ridge);
+mean_errors_ridge = mean(projection_errors_ridge); % mean over num_avg runs
 
 %% plot results
 fig = figure();
