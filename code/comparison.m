@@ -15,8 +15,8 @@ num_avg = 20;
 [U, S, V] = svd(A);
 gold_standards = diag(S);
 ranks = 50;
-fig_legend_string = ["$\sim l_{i, \lambda}(A)$", "$\sim 1/n$", ...
-                     "$\sim \| a_j \|_2^2$", "$\sigma_{k+1}(A)$"];
+fig_legend_string = ["$\propto l_{i, \lambda}(A)$", "$\propto 1/n$", ...
+                     "$\propto \| a_j \|_2^2$", "$\sigma_{k+1}(A)$"];
 
 %% compute projection errors
 

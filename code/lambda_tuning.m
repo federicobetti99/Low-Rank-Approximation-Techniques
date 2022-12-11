@@ -15,8 +15,8 @@ num_avg = 100;
 [U, S, V] = svd(A);
 gold_standards = diag(S);
 ranks = 50;
-fig_legend_string = ["$\sim \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$", ...
-                     "$\sim l_{i, \lambda}(A), \lambda = \frac{\| A-\mathcal{T}_k(A) \|_F}{\sqrt{k}}$"];
+fig_legend_string = ["$\propto \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$", ...
+                     "$\propto l_{i, \lambda}(A), \lambda = \frac{\| A-\mathcal{T}_k(A) \|_F}{\sqrt{k}}$"];
 
 %% compute projection errors
 
