@@ -11,7 +11,7 @@ rng(0)
 %% define Hilbert matrix and useful quantities
 n = 100;
 A = hilb(n);
-num_avg = 20;
+num_avg = 100;
 [U, S, V] = svd(A);
 gold_standards = diag(S);
 ranks = 50;
@@ -44,8 +44,9 @@ projection_errors_ridge = zeros(num_avg, ranks);
 for i=1:num_avg
     % ranks from 1, ..., 50
     for j=1:ranks
-        lambda = 1/sqrt(j) * sqrt(sum(gold_standards(j+1:end).^2));
-        ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V');
+        Uj = U(:, 1:j);
+        lambda = 1/sqrt(j) * norm(A-Uj*Uj'*A, "fro");
+        ridge_scores = diag(A' * pinv(A*A' + lambda^2 * eye(n)) * A);
         [~, projection_error] = RCCS(A, ridge_scores / sum(ridge_scores), j);
         projection_errors_ridge(i, j) = projection_error;
     end
