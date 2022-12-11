@@ -16,7 +16,7 @@ num_avg = 100;
 gold_standards = diag(S);
 ranks = 50;
 fig_legend_string = ["$\sim \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$", ...
-                     "$l_{i, \lambda}(A)$ with adaptive $\lambda$"];
+                     "$\sim l_{i, \lambda}(A), \lambda = \frac{\| A-\mathcal{T}_k(A) \|_F}{\sqrt{k}}$"];
 
 %% compute projection errors
 
@@ -70,5 +70,5 @@ ax.XAxis.FontSize = 14;
 ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend(fig_legend_string, 'interpreter', 'latex');
-legend('Location', 'southwest', 'FontSize', 15, 'NumColumns', 2);
+legend('Location', 'northeast', 'FontSize', 15, 'NumColumns', 1);
 saveas(fig, "../figures/lambda_tuning", "epsc");

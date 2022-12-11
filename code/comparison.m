@@ -16,7 +16,7 @@ num_avg = 20;
 gold_standards = diag(S);
 ranks = 50;
 fig_legend_string = ["$\sim l_{i, \lambda}(A)$", "$\sim 1/n$", ...
-                     "$\sim \vert \vert a_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$"];
+                     "$\sim \| a_j \|_2^2$", "$\sigma_{k+1}(A)$"];
 
 %% compute projection errors
 
@@ -51,5 +51,5 @@ ax.XAxis.FontSize = 14;
 ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend(fig_legend_string, 'interpreter', 'latex');
-legend('Location', 'southwest', 'FontSize', 15, 'NumColumns', 3);
+legend('Location', 'northeast', 'FontSize', 15, 'NumColumns', 3);
 saveas(fig, "../figures/plot", "epsc");

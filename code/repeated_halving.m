@@ -11,7 +11,7 @@ rng(0)
 %% define Hilbert matrix and useful quantities
 n = 100;
 A = hilb(n);
-num_avg = 20; 
+num_avg = 100; 
 [U, S, V] = svd(A);
 gold_standards = diag(S);
 ranks = 50;
@@ -77,5 +77,5 @@ ax.XAxis.FontSize = 14;
 ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend(fig_legend_string, 'interpreter', 'latex');
-legend('Location', 'southwest', 'FontSize', 15, 'NumColumns', 2);
+legend('Location', 'northeast', 'FontSize', 15, 'NumColumns', 1);
 saveas(fig, "../figures/repeated_halving", "epsc");
