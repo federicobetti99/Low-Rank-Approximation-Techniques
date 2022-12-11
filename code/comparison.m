@@ -15,8 +15,8 @@ num_avg = 20;
 [U, S, V] = svd(A);
 gold_standards = diag(S);
 ranks = 50;
-fig_legend_string = ["$\sigma_{k+1}(A)$", "$\sim l_{i, \lambda}(A)$", ...
-                     "$\sim 1/n$",  "$\sim \vert \vert a_j \vert \vert_2^2$"];
+fig_legend_string = ["$\sim l_{i, \lambda}(A)$", "$\sim 1/n$", ...
+                     "$\sim \vert \vert a_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$"];
 
 %% compute projection errors
 
@@ -36,13 +36,13 @@ mean_errors_columns = compute_averages(A, column_scores / sum(column_scores), nu
 %% plot results
 fig = figure();
 x = (1:ranks);
-semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
-hold on
 semilogy(x, mean_errors_ridge, 'LineWidth', 2.5);
 hold on
 semilogy(x, mean_errors_uniform, 'LineWidth', 2.5);
 hold on
 semilogy(x, mean_errors_columns, 'LineWidth', 2.5);
+hold on
+semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
 hold on
 xlabel("k", 'FontSize', 12);
 ylabel("$\vert \vert A - Q Q^T A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
