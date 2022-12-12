@@ -16,7 +16,8 @@ num_avg = 100;
 gold_standards = diag(S);
 ranks = 50;
 lambda = 1e-4;
-fig_legend_string = ["$\sigma_{k+1}(A)$", "$\propto l_{i, \lambda}(A)$", "$\propto l_{i, \lambda}^M(A)$"];
+fig_legend_string = ["$\sigma_{k+1}(A)$", "$\propto l_{i, \lambda}(A)$", ...
+                     "$\propto l_{i, \lambda}^M(A)$"];
 
 %% compute projection errors
 
