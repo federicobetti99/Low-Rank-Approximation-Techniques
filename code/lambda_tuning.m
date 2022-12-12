@@ -15,8 +15,9 @@ num_avg = 100;
 [U, S, V] = svd(A);
 gold_standards = diag(S);
 ranks = 50;
-fig_legend_string = ["$\propto \vert \vert (V_k^T)_j \vert \vert_2^2$", "$\sigma_{k+1}(A)$", ...
-                     "$\propto l_{i, \lambda}(A), \lambda = \frac{\| A-\mathcal{T}_k(A) \|_F}{\sqrt{k}}$"];
+fig_legend_string = ["$\propto \vert \vert (V_k^T)_j \vert \vert_2^2$", ...
+                     "$\propto l_{i, \lambda}(A), \lambda = \frac{\| A-\mathcal{T}_k(A) \|_F}{\sqrt{k}}$", ...
+                      "$\sigma_{k+1}(A)$"];
 
 %% compute projection errors
 
@@ -39,8 +40,7 @@ mean_errors_row = mean(orthogonal_errors_row);  % mean over num_avg runs
 projection_errors_ridge = zeros(num_avg, ranks);
 for i=1:num_avg % average over multiple runs
     for j=1:ranks % ranks from 1, ..., 50
-        Uj = U(:, 1:j);
-        lambda = 1/sqrt(j) * norm(A-Uj*Uj'*A, "fro"); % adaptive \lambda
+        lambda = 1/sqrt(j) * sqrt(sum(gold_standards(j+1:end).^2)); % adaptive \lambda
         ridge_scores = diag(A' * pinv(A*A' + lambda^2 * eye(n)) * A); % compute scores
         [~, projection_error] = RCCS(A, ridge_scores / sum(ridge_scores), j); % compute RCCS
         projection_errors_ridge(i, j) = projection_error; % save error
@@ -53,10 +53,10 @@ fig = figure();
 x = (1:ranks);
 semilogy(x, mean_errors_row, 'LineWidth', 2.5);
 hold on
+semilogy(x, mean_errors_ridge, 'LineWidth', 2.5);
+hold on
 semilogy(x, gold_standards(2:ranks+1), 'LineWidth', 2.0);
 hold on
-semilogy(x, mean_errors_ridge, 'LineWidth', 2.5);
-
 xlabel("k", 'FontSize', 12);
 ylabel("$\vert \vert A - Q Q^T A \vert \vert_2$", 'interpreter', 'latex', 'FontSize', 12);
 ax = gca;
