@@ -12,8 +12,3 @@ toc
 tic
 lambda_tuning
 toc
-
-%% run repeated halving experiment
-tic
-repeated_halving
-toc
