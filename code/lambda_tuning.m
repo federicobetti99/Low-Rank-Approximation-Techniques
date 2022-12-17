@@ -10,14 +10,19 @@ rng(0)
 
 %% define Hilbert matrix and useful quantities
 n = 100;
-A = hilb(n);
+A = zeros(n, n);
+for i=1:n
+    for j=1:n
+        A(i, j) = exp(-abs(i-j)/1000);
+    end
+end
 num_avg = 20;
 [U, S, V] = svd(A);
 gold_standards = diag(S);
-ranks = 50;
+ranks = 99;
 fig_legend_string = ["$\propto \vert \vert (V_k^T)_j \vert \vert_2^2$", ...
                      "$\propto l_{i, \lambda}(A), \lambda = \frac{\| A-\mathcal{T}_k(A) \|_F}{\sqrt{k}}$", ...
-                      "$\sigma_{k+1}(A)$"];
+                     "$\sigma_{k+1}(A)$"];
 
 %% compute projection errors
 
@@ -41,7 +46,7 @@ projection_errors_ridge = zeros(num_avg, ranks);
 for i=1:num_avg % average over multiple runs
     for j=1:ranks % ranks from 1, ..., 50
         lambda = 1/sqrt(j) * sqrt(sum(gold_standards(j+1:end).^2)); % adaptive \lambda
-        ridge_scores = diag(A' * pinv(A*A' + lambda^2 * eye(n)) * A); % compute scores
+        ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V'); % compute scores
         [~, projection_error] = RCCS(A, ridge_scores / sum(ridge_scores), j); % compute RCCS
         projection_errors_ridge(i, j) = projection_error; % save error
     end
