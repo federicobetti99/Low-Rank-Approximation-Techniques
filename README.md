@@ -5,9 +5,9 @@ This repository contains the numerical experiments carried out for the leverage 
 - `code` - Implementation of the experiments
   - `utils` - Subfolder with utilities functions
   - `main.m` - Main script to run all the experiments
-  - `lambda_tuning.m` - Adaptive regularization parameter experiment
   - `comparison.m` - Comparison between sampling strategies
   - `dist_scores.m` - Plot of cumulative sum of sketching distributions
+  - `lambda_tuning.m` - Adaptive regularization parameter experiment
 - `figures` - Plots of the obtained results
 - `report.pdf` - Report of the obtained results
   
