@@ -6,7 +6,7 @@ clc
 % Running the three subsections below reproduces the plots shown in
 % the report in the same order as they appear in the latter
 
-%% run comparison between uniform sampling, columns norm sampling and ridge scores
+%% run comparison between uniform sampling, columns norm sampling and ridge scores sampling
 comparison
 
 %% plot cumulative sum of sketching distributions

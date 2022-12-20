@@ -12,12 +12,12 @@ fig_legend_string = ["$\propto l_{i, \lambda}(A)$", "$\propto 1/n$", ...
                      "$\propto \| a_j \|_2^2$"];
 
 lambda = 1e-4; % regularization parameter
-ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V'); % ridge scores
+ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V'); % compute ridge scores
 ridge_scores = ridge_scores / sum(ridge_scores);
 
-column_scores = sum(A.^2, 2) / norm(A, "fro")^2;  % column scores
+column_scores = sum(A.^2, 2) / norm(A, "fro")^2;  % compute columns norm scores
 
-uniform_scores = 1/n * ones(n, 1);  % uniform scores
+uniform_scores = 1/n * ones(n, 1);  % compute uniform scores
 
 %% plot cumulative sums
 fig = figure();

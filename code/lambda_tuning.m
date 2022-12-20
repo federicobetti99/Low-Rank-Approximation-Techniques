@@ -30,8 +30,8 @@ fig_legend_string = ["$\propto \vert \vert (V_k^T)_j \vert \vert_2^2$", ...
 orthogonal_errors_row = zeros(num_avg, ranks);
 for i=1:num_avg % average over multiple runs
     for j=1:ranks  % ranks from 1, ..., 50
-        V_j = V(:, 1:j);  % take first k columns of V
-        row_scores = zeros(n, 1); % compute scores
+        V_j = V(:, 1:j);  % take first j columns of V
+        row_scores = zeros(n, 1); % compute rows norm scores
         for l=1:n
             row_scores(l) = norm(V_j(l, :))^2;
         end
@@ -46,7 +46,7 @@ projection_errors_ridge = zeros(num_avg, ranks);
 for i=1:num_avg % average over multiple runs
     for j=1:ranks % ranks from 1, ..., 50
         lambda = 1/sqrt(j) * sqrt(sum(gold_standards(j+1:end).^2)); % adaptive \lambda
-        ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V'); % compute scores
+        ridge_scores = diag(V * diag(diag(S).^2 ./ (diag(S).^2 + lambda^2)) * V'); % compute ridge scores
         [~, projection_error] = RCCS(A, ridge_scores / sum(ridge_scores), j); % compute RCCS
         projection_errors_ridge(i, j) = projection_error; % save error
     end

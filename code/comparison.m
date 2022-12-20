@@ -30,7 +30,7 @@ uniform_scores = 1/n * ones(n, 1); % compute uniform scores
 mean_errors_uniform = compute_averages(A, uniform_scores, num_avg, ranks); % mean over num_avg runs
 
 % columns norm scores
-column_scores = sum(A.^2, 2) / norm(A, "fro")^2; % columns norm scores
+column_scores = sum(A.^2, 2) / norm(A, "fro")^2; % compute columns norm scores
 mean_errors_columns = compute_averages(A, column_scores, num_avg, ranks); % mean over num_avg runs
 
 %% plot results
