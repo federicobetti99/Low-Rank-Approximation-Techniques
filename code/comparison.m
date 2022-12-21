@@ -52,4 +52,4 @@ ax.YAxis.FontSize = 14;
 title("Low-rank approximation by column sampling", 'FontSize', 12);
 legend(fig_legend_string, 'interpreter', 'latex');
 legend('Location', 'northeast', 'FontSize', 15, 'NumColumns', 3);
-saveas(fig, "../figures/plot", "epsc");
+saveas(fig, "../figures/comparison", "epsc");
