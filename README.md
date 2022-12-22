@@ -1,5 +1,5 @@
 # Low Rank Approximation Techniques
-This repository contains the numerical experiments carried out for the leverage score sampling project, carried out in the context of the MATH-403 Low-Rank Approximation Techniques course at EPFL.
+This repository contains the numerical experiments for the Leverage Score Sampling project, carried out in the context of the MATH-403 Low-Rank Approximation Techniques course at EPFL.
 
 ## Repository description
 - `code` - Implementation of the experiments
